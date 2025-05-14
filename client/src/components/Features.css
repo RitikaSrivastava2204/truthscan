@@ -1,0 +1,79 @@
+/* src/components/Features.css */
+
+.features-section {
+  background-color: #f4f4f9; /* Light background color */
+  color: #333; /* Dark text for better contrast */
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.features-title {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #4a00e0; /* Deep Purple */
+}
+
+.features-subtitle {
+  font-size: 1.2rem;
+  margin-bottom: 40px;
+  font-weight: 300;
+  color: #8e2de2; /* Lighter Purple */
+}
+
+.features-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.feature-card {
+  background-color: #ffffff; /* White background for the card */
+  padding: 30px;
+  border-radius: 10px;
+  width: 280px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Light shadow */
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 6px 15px rgba(138, 43, 226, 0.2); /* Lighter purple hover effect */
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  color: #4a00e0; /* Purple for icons */
+}
+
+.feature-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #8e2de2; /* Lighter Purple for card titles */
+}
+
+.feature-card p {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #666; /* Dark gray for readability */
+}
+
+.cta-button {
+  margin-top: 50px;
+}
+
+.cta-link {
+  background-color: #4a00e0; /* Deep Purple for the CTA button */
+  padding: 15px 30px;
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+  border-radius: 30px;
+  transition: background-color 0.3s ease;
+}
+
+.cta-link:hover {
+  background-color: #8e2de2; /* Lighter Purple for hover */
+}

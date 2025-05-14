@@ -1,0 +1,131 @@
+/* Header.css */
+
+/* Basic Header Styling */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #2b0f57; /* Dark Purple Background */
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 10px rgba(138, 43, 226, 0.4); /* Glowing shadow */
+}
+
+.logo a {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ffffff;
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+
+/* Navigation */
+.nav ul {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+}
+
+.nav ul li a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+/* Hover Effect */
+.nav ul li a:hover {
+  color: #ff9ff3; /* Neon pink */
+}
+
+.nav ul li a::after {
+  content: '';
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  left: 0;
+  bottom: -4px;
+  background: linear-gradient(90deg, #4a00e0, #8e2de2);
+  transition: width 0.3s ease;
+}
+
+.nav ul li a:hover::after {
+  width: 100%;
+}
+
+/* Mobile Menu (Hamburger Icon) */
+.menu-icon {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.menu-icon .bar {
+  width: 30px;
+  height: 4px;
+  background-color: white;
+  border-radius: 2px;
+}
+
+.nav {
+  display: flex;
+}
+
+.nav.active {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #2b0f57;
+  width: 100%;
+  height: 100vh;
+  padding: 3rem 2rem;
+}
+
+.nav.active ul {
+  flex-direction: column;
+  gap: 1.5rem;
+  text-align: center;
+}
+
+/* Media Queries for Mobile Devices */
+@media (max-width: 768px) {
+  .nav {
+    display: none;
+  }
+
+  .menu-icon {
+    display: flex;
+  }
+}
+
+/* Styling for "Start Detecting" Button */
+/* Styling for "Start Detecting" Button */
+.start-detecting-link {
+  background: linear-gradient(135deg, #00bfae, #4a00e0); /* Teal to Purple Gradient */
+  color: #ffffff; /* White Text */
+  font-weight: bold;
+  padding: 0.8rem 2rem;
+  font-size: 1.1rem;
+  border-radius: 30px;
+  border: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  text-decoration: none; /* Remove underline */
+}
+
+.start-detecting-link:hover {
+  transform: scale(1.05); /* Slight scale effect on hover */
+  box-shadow: 0 0 15px 5px rgba(0, 191, 174, 0.7); /* Glowing effect */
+  text-decoration: none; /* Remove underline */
+}
+
+.start-detecting-link:focus {
+  outline: none;
+  box-shadow: 0 0 10px 2px #00bfae; /* Focus effect */
+}
