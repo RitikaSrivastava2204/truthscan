@@ -1,0 +1,108 @@
+.login-page {
+    min-height: 100vh;
+    background: #f8fafc; /* very light gray/white */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .login-card {
+    background: #ffffff; /* pure white card */
+    border-radius: 12px;
+    padding: 3rem 2.5rem;
+    width: 360px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* subtle shadow */
+    color: #222222; /* dark text */
+    text-align: center;
+  }
+  
+  .login-title {
+    margin-bottom: 2rem;
+    font-weight: 700;
+    font-size: 1.9rem;
+    color: #111111;
+    letter-spacing: 0.5px;
+  }
+  
+  .login-form label {
+    display: block;
+    text-align: left;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #555555;
+  }
+  
+  .login-form input {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 1.2rem;
+    border: 1.8px solid #d1d5db; /* light gray border */
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    background: #fefefe;
+    color: #333333;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .login-form input::placeholder {
+    color: #a0a0a0;
+  }
+  
+  .login-form input:focus {
+    border-color: #4f46e5; /* subtle blue focus */
+    box-shadow: 0 0 6px rgba(79, 70, 229, 0.4);
+    background: #ffffff;
+  }
+  
+  .error-message {
+    text-align: left;
+    color: #e53935; /* clean red */
+    margin-top: -0.8rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+  }
+  
+  .login-btn {
+    width: 100%;
+    padding: 14px 0;
+    background: #4f46e5; /* professional blue */
+    border: none;
+    border-radius: 30px;
+    color: white;
+    font-size: 1.15rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.5);
+  }
+  
+  .login-btn:hover {
+    background: #4338ca;
+    box-shadow: 0 6px 16px rgba(67, 56, 202, 0.6);
+  }
+  
+  .divider {
+    margin: 1.8rem 0;
+    color: #999999;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    font-size: 0.9rem;
+  }
+  
+  /* Override Google Login button style */
+  div[data-testid="google-login-button"] {
+    width: 100% !important;
+    justify-content: center !important;
+    border-radius: 30px !important;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3) !important;
+    transition: box-shadow 0.3s ease !important;
+  }
+  
+  div[data-testid="google-login-button"]:hover {
+    box-shadow: 0 6px 16px rgba(67, 56, 202, 0.5) !important;
+  }
+  
