@@ -1,3 +1,4 @@
+// src/pages/StartDetecting.jsx
 import React, { useState } from 'react';
 import './StartDetecting.css';
 
@@ -26,55 +27,93 @@ const StartDetecting = () => {
   const [step, setStep] = useState(1);
   const [selectedService, setSelectedService] = useState(null);
   const [inputData, setInputData] = useState('');
-  const [detectionMode, setDetectionMode] = useState('basic'); // NEW
+  const [imageFile, setImageFile] = useState(null);
+  const [detectionMode, setDetectionMode] = useState('basic');
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const handleServiceSelect = (serviceId) => {
     setSelectedService(serviceId);
     setStep(2);
     setInputData('');
+    setImageFile(null);
     setResult(null);
+    setErrorMsg('');
   };
 
   const handleBack = () => {
     setStep(1);
     setSelectedService(null);
     setInputData('');
+    setImageFile(null);
     setResult(null);
-    setDetectionMode('basic'); // Reset mode on back
+    setDetectionMode('basic');
+    setErrorMsg('');
+  };
+
+  const handleStartDetection = async () => {
+    if ((selectedService !== 'image' && !inputData.trim()) || (selectedService === 'image' && !imageFile)) {
+      setErrorMsg('Input cannot be empty.');
+      return;
+    }
+
+    setLoading(true);
+    setErrorMsg('');
+    setResult(null);
+
+    try {
+      let response;
+
+      if (selectedService === 'image') {
+        const formData = new FormData();
+        formData.append('image', imageFile);
+
+        response = await fetch('http://localhost:8080/detect/image', {
+          method: 'POST',
+          body: formData,
+        });
+      } else {
+        response = await fetch('http://localhost:8080/detect', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: inputData,
+            mode: detectionMode,
+            type: selectedService,
+          }),
+        });
+      }
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setResult(data);
+        setStep(3);
+      } else {
+        const errorText = data?.message || data?.error || 'Detection failed. Please try again.';
+      
+        if (errorText.includes('exceeded the DAILY quota')) {
+          setErrorMsg('⚠️ Daily quota for deep plagiarism detection exceeded. Please try again tomorrow or upgrade your plan.');
+        } else {
+          setErrorMsg(errorText);
+        }
+      }
+      
+    } catch (err) {
+      console.error(err);
+      setErrorMsg('An unexpected error occurred.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleInputChange = (e) => {
     setInputData(e.target.value);
   };
 
-  const handleStartDetection = async () => {
-    if (selectedService === 'image') {
-      alert('Image detection not implemented yet.');
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const response = await fetch('http://localhost:8080/detect', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text: inputData,
-          mode: detectionMode, // Send mode
-        }),
-      });
-
-      const data = await response.json();
-      setResult(data);
-      setStep(3);
-    } catch (error) {
-      console.error('Error during detection:', error);
-      alert('Something went wrong during detection.');
-    } finally {
-      setLoading(false);
-    }
+  const handleImageUpload = (e) => {
+    setImageFile(e.target.files[0]);
   };
 
   return (
@@ -86,7 +125,6 @@ const StartDetecting = () => {
           <div
             key={num}
             className={`step-indicator ${step >= num ? 'active' : ''}`}
-            title={`Step ${num}`}
           />
         ))}
       </div>
@@ -119,27 +157,17 @@ const StartDetecting = () => {
           </label>
 
           {selectedService === 'image' ? (
-            <input
-              id="detectionInput"
-              type="file"
-              accept="image/*"
-              onChange={(e) => setInputData(e.target.files[0])}
-            />
+            <input type="file" accept="image/*" onChange={handleImageUpload} />
           ) : (
             <textarea
               id="detectionInput"
               rows={selectedService === 'code' ? 8 : 6}
-              placeholder={
-                selectedService === 'text'
-                  ? 'Type or paste your text here...'
-                  : 'Paste your code here...'
-              }
+              placeholder={selectedService === 'text' ? 'Type or paste your text here...' : 'Paste your code here...'}
               value={inputData}
               onChange={handleInputChange}
             />
           )}
 
-          {/* Mode toggle for text detection */}
           {selectedService === 'text' && (
             <div className="mode-toggle">
               <p><strong>Choose Detection Mode:</strong></p>
@@ -156,23 +184,23 @@ const StartDetecting = () => {
               <label>
                 <input
                   type="radio"
-                  value="api"
-                  checked={detectionMode === 'api'}
-                  onChange={() => setDetectionMode('api')}
+                  value="deep"
+                  checked={detectionMode === 'deep'}
+                  onChange={() => setDetectionMode('deep')}
                 />
                 Deep Check (API-based)
               </label>
             </div>
           )}
 
+          {errorMsg && <p className="error-message">{errorMsg}</p>}
+
           <div>
-            <button className="back-btn" onClick={handleBack}>
-              Back
-            </button>
+            <button className="back-btn" onClick={handleBack}>Back</button>
             <button
               className="start-btn"
               onClick={handleStartDetection}
-              disabled={!inputData || (selectedService === 'image' && !inputData.name)}
+              disabled={selectedService === 'image' ? !imageFile : !inputData.trim()}
             >
               {loading ? 'Detecting...' : 'Start Detection'}
             </button>
@@ -182,18 +210,62 @@ const StartDetecting = () => {
 
       {step === 3 && (
         <div className="result-section">
-          <h3>Detection Result</h3>
-          {result ? (
-            <>
-              <p><strong>Received:</strong> {result.receivedText}</p>
-              <p><strong>Plagiarism Score:</strong> {result.plagiarismScore}%</p>
-            </>
-          ) : (
-            <p>No result to show.</p>
-          )}
-          <button className="back-btn" onClick={() => setStep(1)}>
-            Start Over
-          </button>
+          
+          {result && Object.keys(result).length > 0 && (
+  <div className="result-box p-4 bg-gray-100 rounded-lg shadow">
+    <h2 className="text-xl font-bold mb-4">Detection Result</h2>
+
+    {/* Handle normal mode */}
+    {typeof result.plagiarismScore !== 'undefined' && (
+      <p><strong>Plagiarism Score:</strong> {result.plagiarismScore}%</p>
+    )}
+    {result.receivedText && (
+      <p><strong>Original Text:</strong> {result.receivedText}</p>
+    )}
+    {result.plagiarizedText && (
+      <p><strong>Plagiarized Text:</strong> {result.plagiarizedText}</p>
+    )}
+    {result.matchedSources && result.matchedSources.length > 0 && (
+      <div>
+        <strong>Matched Sources:</strong>
+        <ul className="list-disc ml-6">
+          {result.matchedSources.map((source, index) => (
+            <li key={index}>{source}</li>
+          ))}
+        </ul>
+      </div>
+    )}
+
+    {/* Handle deep mode */}
+    {result.status === "no_duplicate_content_found" && (
+      <p className="text-green-600 font-semibold">
+        No duplicate content found. 🎉
+      </p>
+    )}
+    {result.duplicate_content_found_on_links &&
+      result.duplicate_content_found_on_links.length > 0 && (
+        <div>
+          <strong>Duplicate content found on:</strong>
+          <ul className="list-disc ml-6">
+            {result.duplicate_content_found_on_links.map((link, index) => (
+              <li key={index}>
+                <a
+                  href={link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 underline"
+                >
+                  {link}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+  </div>
+)}
+
+          <button className="back-btn" onClick={() => setStep(1)}>Start Over</button>
         </div>
       )}
     </div>
