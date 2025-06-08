@@ -7,6 +7,8 @@ const {
   jaccardSimilarity,
   nGramJaccardSimilarity,
 } = require("./utils/plagiarismUtils");
+const loadReferenceTexts = require("./utils/loadReferenceTexts");
+const path = require("path");
 
 const app = express();
 const PORT = 8080;
@@ -15,8 +17,9 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Example reference content for basic mode
-const referenceText =
-  "This is the reference content you are comparing against.";
+const referenceTexts = loadReferenceTexts(
+  path.join(__dirname, "reference_texts")
+);
 
 app.post("/detect", async (req, res) => {
   const { text, mode } = req.body;
@@ -26,13 +29,19 @@ app.post("/detect", async (req, res) => {
   }
 
   if (mode === "basic") {
-    const nGramSize = 3; // You can experiment with 2, 3, 4, etc.
-    const score = nGramJaccardSimilarity(text, referenceText, nGramSize);
+    let maxScore = 0;
+
+    referenceTexts.forEach((refText) => {
+      const score = nGramJaccardSimilarity(text, refText, 3); // using n=3
+      if (score > maxScore) {
+        maxScore = score;
+      }
+    });
+
     return res.json({
       mode: "basic",
       receivedText: text,
-      nGramSize: nGramSize,
-      plagiarismScore: score.toFixed(2),
+      plagiarismScore: maxScore.toFixed(2),
     });
   }
 
